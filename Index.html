@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>₿abyWhale$ - Navigate the Crypto Tides</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #a855f7;
+            --accent: #ec4899;
+            --dark: #0f172a;
+            --darker: #020617;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--darker);
+            color: #e2e8f0;
+            scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--primary), var(--secondary));
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(to bottom, var(--secondary), var(--accent));
+        }
+        
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        /* Floating animation */
+        @keyframes float {
+            0% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+            100% { transform: translateY(0px) rotate(0deg); }
+        }
+        
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        /* Pulse animation */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse-animation {
+            animation: pulse 3s infinite;
+        }
+        
+        /* Glow effect */
+        .glow {
+            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
+        }
+        
+        /* Parallax effect */
+        .parallax {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        /* Card hover effects */
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Loading spinner */
+        .loading-spinner {
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Modal styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        
+        .modal-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .modal-content {
+            background-color: #1e293b;
+            padding: 2.5rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6);
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            transform: translateY(-20px);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal-overlay.show .modal-content {
+            transform: translateY(0);
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: #e2e8f0;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .close-button:hover {
+            color: #ef4444;
+        }
+        
+        /* Section reveal animation */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        /* Crypto wave pattern */
+        .crypto-wave {
+            background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 C20 20, 40 0, 60 10 S100 0, 100 10' fill='none' stroke='%234f46e5' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E");
+            background-size: 100px 20px;
+        }
+        
+        /* Interactive crypto chart */
+        .chart-container {
+            position: relative;
+            overflow: hidden;
+            border-radius: 1rem;
+        }
+        
+        .chart-line {
+            stroke: url(#chart-gradient);
+            stroke-width: 3;
+            fill: none;
+        }
+        
+        /* Interactive buttons */
+        .interactive-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .interactive-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.5s ease;
+        }
+        
+        .interactive-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Crypto particles background */
+        .crypto-particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: rgba(99, 102, 241, 0.3);
+            border-radius: 50%;
+            animation: particle-float 15s infinite linear;
+        }
+        
+        @keyframes particle-float {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100px) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+    <!-- Custom Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'crypto-blue': '#0f172a',
+                        'crypto-indigo': '#4f46e5',
+                        'crypto-purple': '#a855f7',
+                        'crypto-pink': '#ec4899',
+                    },
+                    boxShadow: {
+                        'crypto': '0 10px 25px -5px rgba(79, 70, 229, 0.3)',
+                        'crypto-lg': '0 15px 30px -5px rgba(79, 70, 229, 0.3)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="antialiased">
+    <!-- Crypto Particles Background -->
+    <div class="crypto-particles" id="particles-container"></div>
+    
+    <!-- Header -->
+    <header class="bg-gray-900/80 backdrop-blur-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-50 border-b border-gray-800">
+        <div class="flex items-center">
+            <!-- Logo/Name -->
+            <div class="relative">
+                <div class="h-10 w-10 rounded-full mr-3 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
+                    ₿W
+                </div>
+                <span class="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-gray-900 animate-pulse"></span>
+            </div>
+            <h1 class="text-3xl font-bold gradient-text">₿abyWhale$</h1>
+        </div>
+        <!-- Navigation -->
+        <nav class="hidden md:flex space-x-8">
+            <a href="#home" class="text-lg text-gray-300 hover:text-indigo-400 transition duration-300 flex items-center relative group">
+                <i class="fas fa-home mr-2"></i> Home
+                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#learn" class="text-lg text-gray-300 hover:text-indigo-400 transition duration-300 flex items-center relative group">
+                <i class="fas fa-graduation-cap mr-2"></i> Learn
+                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#live-data" class="text-lg text-gray-300 hover:text-indigo-400 transition duration-300 flex items-center relative group">
+                <i class="fas fa-chart-bar mr-2"></i> Live Data
+                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#news-feed" class="text-lg text-gray-300 hover:text-indigo-400 transition duration-300 flex items-center relative group">
+                <i class="fas fa-newspaper mr-2"></i> News
+                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+            <a href="#community" class="text-lg text-gray-300 hover:text-indigo-400 transition duration-300 flex items-center relative group">
+                <i class="fas fa-users mr-2"></i> Community
+                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+        </nav>
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden text-gray-300 focus:outline-none" id="mobile-menu-button">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-gray-900 bg-opacity-95 z-50 hidden flex-col items-center justify-center space-y-8 md:hidden">
+        <button class="absolute top-6 right-6 text-gray-300 focus:outline-none" id="close-mobile-menu">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        <a href="#home" class="text-3xl text-gray-300 hover:text-indigo-400 transition duration-300" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+            <i class="fas fa-home mr-3"></i> Home
+        </a>
+        <a href="#learn" class="text-3xl text-gray-300 hover:text-indigo-400 transition duration-300" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+            <i class="fas fa-graduation-cap mr-3"></i> Learn
+        </a>
+        <a href="#live-data" class="text-3xl text-gray-300 hover:text-indigo-400 transition duration-300" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+            <i class="fas fa-chart-bar mr-3"></i> Live Data
+        </a>
+        <a href="#news-feed" class="text-3xl text-gray-300 hover:text-indigo-400 transition duration-300" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+            <i class="fas fa-newspaper mr-3"></i> News
+        </a>
+        <a href="#community" class="text-3xl text-gray-300 hover:text-indigo-400 transition duration-300" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+            <i class="fas fa-users mr-3"></i> Community
+        </a>
+    </div>
+
+    <main class="container mx-auto px-4 py-12" id="main-content">
+        <!-- Hero Section -->
+        <section id="home" class="relative text-center py-24 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 rounded-3xl shadow-2xl mb-16 p-8 overflow-hidden crypto-wave">
+            <!-- Animated Crypto Icons Background -->
+            <div class="absolute inset-0 overflow-hidden z-0">
+                <div class="absolute top-10 left-10 text-yellow-400 opacity-20 text-4xl animate-float" style="animation-delay: 0s;">
+                    <i class="fab fa-bitcoin"></i>
+                </div>
+                <div class="absolute top-1/4 right-20 text-blue-400 opacity-20 text-3xl animate-float" style="animation-delay: 1s;">
+                    <i class="fab fa-ethereum"></i>
+                </div>
+                <div class="absolute bottom-20 left-1/4 text-purple-400 opacity-20 text-2xl animate-float" style="animation-delay: 2s;">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <div class="absolute bottom-1/3 right-1/3 text-green-400 opacity-20 text-5xl animate-float" style="animation-delay: 3s;">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="absolute top-1/2 left-5 text-gray-400 opacity-15 text-3xl animate-float" style="animation-delay: 4s;">
+                    <i class="fab fa-litecoin-sign"></i>
+                </div>
+                <div class="absolute bottom-10 right-10 text-orange-400 opacity-18 text-4xl animate-float" style="animation-delay: 5s;">
+                    <i class="fab fa-dogecoin"></i>
+                </div>
+            </div>
+
+            <div class="relative z-10">
+                <h2 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
+                    <span class="gradient-text">Dive into Crypto</span> with ₿abyWhale$!
+                </h2>
+                <p class="text-2xl md:text-3xl font-semibold text-indigo-200 mb-8">
+                    Navigate the Crypto Tides, Evolve into a Market Whale.
+                </p>
+                <p class="text-xl md:text-2xl text-gray-200 mb-10 max-w-3xl mx-auto">
+                    Your ultimate hub for crypto education, collaborative trading, and exclusive insights.
+                    From beginner basics to advanced strategies, we're here to guide your journey.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                    <a href="#learn" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center interactive-btn pulse-animation">
+                        <i class="fas fa-graduation-cap mr-2"></i> Start Learning Today
+                    </a>
+                    <a href="#community" class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center interactive-btn">
+                        <i class="fas fa-users mr-2"></i> Join Our Community
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 reveal">
+            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
+                <div class="text-4xl font-bold text-indigo-400 mb-2">10K+</div>
+                <div class="text-gray-300">Community Members</div>
+            </div>
+            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
+                <div class="text-4xl font-bold text-purple-400 mb-2">50+</div>
+                <div class="text-gray-300">Learning Modules</div>
+            </div>
+            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
+                <div class="text-4xl font-bold text-blue-400 mb-2">24/7</div>
+                <div class="text-gray-300">Support</div>
+            </div>
+            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
+                <div class="text-4xl font-bold text-green-400 mb-2">100+</div>
+                <div class="text-gray-300">Premium Signals Monthly</div>
+            </div>
+        </section>
+
+        <!-- Live Market Data Section -->
+        <section id="live-data" class="py-16 bg-gradient-to-br from-gray-900 to-blue-950 rounded-3xl shadow-2xl mb-16 p-8 reveal">
+            <h3 class="text-4xl font-bold text-center text-teal-400 mb-12">
+                <i class="fas fa-chart-bar mr-3"></i> Live Market Data
+            </h3>
+            <p class="text-xl text-center text-gray-300 mb-10 max-w-3xl mx-auto">
+                Stay informed with real-time global crypto market insights.
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Global Market Cap -->
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center border-l-4 border-teal-500 card-hover">
+                    <h4 class="text-2xl font-semibold text-white mb-3">Total Market Cap</h4>
+                    <div id="total-market-cap" class="text-4xl font-bold text-teal-400">
+                        <div class="loading-spinner"></div>
+                    </div>
+                    <p id="market-cap-error" class="text-red-400 mt-2 hidden">Failed to load.</p>
+                </div>
+
+                <!-- Dominance -->
+                <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center border-l-4 border-cyan-500 card-hover">
+                    <h4 class="text-2xl font-semibold text-white mb-3">Top 3 Dominance</h4>
+                    <div class="flex flex-col space-y-2">
+                        <p id="btc-dominance" class="text-2xl font-bold text-yellow-400 flex items-center justify-center">
+                            <i class="fab fa-bitcoin mr-2 text-yellow-500"></i> BTC: <span class="loading-spinner w-6 h-6 ml-2"></span>
+                        </p>
+                        <p id="eth-dominance" class="text-2xl font-bold text-blue-400 flex items-center justify-center">
+                            <i class="fab fa-ethereum mr-2 text-blue-500"></i> ETH: <span class="loading-spinner
