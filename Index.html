@@ -10,6 +10,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <!-- Font Awesome for icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- AOS Library for scroll animations -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <style>
         :root {
             --primary: #6366f1;
@@ -27,23 +30,6 @@
             overflow-x: hidden;
         }
         
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #1e293b;
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: linear-gradient(to bottom, var(--primary), var(--secondary));
-            border-radius: 10px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(to bottom, var(--secondary), var(--accent));
-        }
-        
-        /* Gradient text */
         .gradient-text {
             background: linear-gradient(90deg, var(--primary), var(--secondary), var(--accent));
             -webkit-background-clip: text;
@@ -51,52 +37,51 @@
             color: transparent;
         }
         
-        /* Floating animation */
-        @keyframes float {
-            0% { transform: translateY(0px) rotate(0deg); }
-            50% { transform: translateY(-10px) rotate(5deg); }
-            100% { transform: translateY(0px) rotate(0deg); }
+        .gradient-bg {
+            background: linear-gradient(135deg, var(--dark), var(--darker));
         }
         
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        
-        /* Pulse animation */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-        
-        .pulse-animation {
-            animation: pulse 3s infinite;
-        }
-        
-        /* Glow effect */
-        .glow {
-            box-shadow: 0 0 20px rgba(99, 102, 241, 0.3);
-        }
-        
-        /* Parallax effect */
-        .parallax {
-            background-attachment: fixed;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-        }
-        
-        /* Card hover effects */
-        .card-hover {
+        .crypto-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(99, 102, 241, 0.2);
+            border-radius: 1rem;
             transition: all 0.3s ease;
         }
         
-        .card-hover:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.5);
+        .crypto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+            border-color: rgba(99, 102, 241, 0.5);
         }
         
-        /* Loading spinner */
+        .floating {
+            animation: floating 6s ease-in-out infinite;
+        }
+        
+        @keyframes floating {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        @keyframes pulse-glow {
+            0% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(99, 102, 241, 0.8); }
+            100% { box-shadow: 0 0 5px rgba(99, 102, 241, 0.5); }
+        }
+        
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.3) 0%, transparent 70%);
+            pointer-events: none;
+        }
+        
         .loading-spinner {
             border: 4px solid rgba(255, 255, 255, 0.3);
             border-top: 4px solid var(--primary);
@@ -111,14 +96,138 @@
             100% { transform: rotate(360deg); }
         }
         
-        /* Modal styles */
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 30px;
+            height: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+        }
+        
+        .scroll-indicator::before {
+            content: '';
+            position: absolute;
+            top: 8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 10px;
+            background: rgba(255, 255, 255, 0.7);
+            border-radius: 2px;
+            animation: scroll 2s infinite;
+        }
+        
+        @keyframes scroll {
+            0% { transform: translateX(-50%) translateY(0); opacity: 1; }
+            100% { transform: translateX(-50%) translateY(20px); opacity: 0; }
+        }
+        
+        .parallax-bg {
+            background-attachment: fixed;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+        
+        .crypto-icon {
+            filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+        }
+        
+        .glitch-text {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .glitch-text::before,
+        .glitch-text::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .glitch-text::before {
+            left: 2px;
+            text-shadow: -1px 0 red;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim 5s infinite linear alternate-reverse;
+        }
+        
+        .glitch-text::after {
+            left: -2px;
+            text-shadow: -1px 0 blue;
+            clip: rect(44px, 450px, 56px, 0);
+            animation: glitch-anim2 5s infinite linear alternate-reverse;
+        }
+        
+        @keyframes glitch-anim {
+            0% { clip: rect(42px, 9999px, 44px, 0); }
+            5% { clip: rect(12px, 9999px, 59px, 0); }
+            10% { clip: rect(48px, 9999px, 29px, 0); }
+            15% { clip: rect(42px, 9999px, 73px, 0); }
+            20% { clip: rect(63px, 9999px, 27px, 0); }
+            25% { clip: rect(34px, 9999px, 55px, 0); }
+            30% { clip: rect(86px, 9999px, 73px, 0); }
+            35% { clip: rect(20px, 9999px, 20px, 0); }
+            40% { clip: rect(26px, 9999px, 60px, 0); }
+            45% { clip: rect(25px, 9999px, 66px, 0); }
+            50% { clip: rect(57px, 9999px, 98px, 0); }
+            55% { clip: rect(5px, 9999px, 46px, 0); }
+            60% { clip: rect(82px, 9999px, 31px, 0); }
+            65% { clip: rect(54px, 9999px, 27px, 0); }
+            70% { clip: rect(28px, 9999px, 99px, 0); }
+            75% { clip: rect(45px, 9999px, 69px, 0); }
+            80% { clip: rect(23px, 9999px, 85px, 0); }
+            85% { clip: rect(54px, 9999px, 84px, 0); }
+            90% { clip: rect(45px, 9999px, 47px, 0); }
+            95% { clip: rect(37px, 9999px, 20px, 0); }
+            100% { clip: rect(4px, 9999px, 91px, 0); }
+        }
+        
+        @keyframes glitch-anim2 {
+            0% { clip: rect(65px, 9999px, 100px, 0); }
+            5% { clip: rect(52px, 9999px, 74px, 0); }
+            10% { clip: rect(79px, 9999px, 85px, 0); }
+            15% { clip: rect(75px, 9999px, 5px, 0); }
+            20% { clip: rect(67px, 9999px, 61px, 0); }
+            25% { clip: rect(14px, 9999px, 79px, 0); }
+            30% { clip: rect(1px, 9999px, 66px, 0); }
+            35% { clip: rect(86px, 9999px, 30px, 0); }
+            40% { clip: rect(23px, 9999px, 98px, 0); }
+            45% { clip: rect(85px, 9999px, 72px, 0); }
+            50% { clip: rect(71px, 9999px, 75px, 0); }
+            55% { clip: rect(2px, 9999px, 48px, 0); }
+            60% { clip: rect(30px, 9999px, 16px, 0); }
+            65% { clip: rect(59px, 9999px, 50px, 0); }
+            70% { clip: rect(41px, 9999px, 62px, 0); }
+            75% { clip: rect(2px, 9999px, 82px, 0); }
+            80% { clip: rect(47px, 9999px, 73px, 0); }
+            85% { clip: rect(3px, 9999px, 27px, 0); }
+            90% { clip: rect(26px, 9999px, 55px, 0); }
+            95% { clip: rect(42px, 9999px, 97px, 0); }
+            100% { clip: rect(38px, 9999px, 49px, 0); }
+        }
+        
+        .neon-border {
+            position: relative;
+            border: 2px solid transparent;
+            border-radius: 1rem;
+            background: linear-gradient(var(--darker), var(--darker)) padding-box,
+                        linear-gradient(45deg, var(--primary), var(--secondary), var(--accent)) border-box;
+        }
+        
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.7);
+            background-color: rgba(0, 0, 0, 0.8);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -166,130 +275,43 @@
             color: #ef4444;
         }
         
-        /* Section reveal animation */
-        .reveal {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: all 0.8s ease;
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
         }
         
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+            border-radius: 10px;
         }
         
-        /* Crypto wave pattern */
-        .crypto-wave {
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='20' viewBox='0 0 100 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 10 C20 20, 40 0, 60 10 S100 0, 100 10' fill='none' stroke='%234f46e5' stroke-width='0.5' opacity='0.2'/%3E%3C/svg%3E");
-            background-size: 100px 20px;
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--primary), var(--secondary));
+            border-radius: 10px;
         }
         
-        /* Interactive crypto chart */
-        .chart-container {
-            position: relative;
-            overflow: hidden;
-            border-radius: 1rem;
-        }
-        
-        .chart-line {
-            stroke: url(#chart-gradient);
-            stroke-width: 3;
-            fill: none;
-        }
-        
-        /* Interactive buttons */
-        .interactive-btn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-        
-        .interactive-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: all 0.5s ease;
-        }
-        
-        .interactive-btn:hover::before {
-            left: 100%;
-        }
-        
-        /* Crypto particles background */
-        .crypto-particles {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            z-index: -1;
-        }
-        
-        .particle {
-            position: absolute;
-            background: rgba(99, 102, 241, 0.3);
-            border-radius: 50%;
-            animation: particle-float 15s infinite linear;
-        }
-        
-        @keyframes particle-float {
-            0% {
-                transform: translateY(100vh) rotate(0deg);
-                opacity: 0;
-            }
-            10% {
-                opacity: 1;
-            }
-            90% {
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-100px) rotate(360deg);
-                opacity: 0;
-            }
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(var(--secondary), var(--accent));
         }
     </style>
-    <!-- Custom Tailwind Config -->
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        'crypto-blue': '#0f172a',
-                        'crypto-indigo': '#4f46e5',
-                        'crypto-purple': '#a855f7',
-                        'crypto-pink': '#ec4899',
-                    },
-                    boxShadow: {
-                        'crypto': '0 10px 25px -5px rgba(79, 70, 229, 0.3)',
-                        'crypto-lg': '0 15px 30px -5px rgba(79, 70, 229, 0.3)',
-                    }
-                }
-            }
-        }
-    </script>
 </head>
 <body class="antialiased">
-    <!-- Crypto Particles Background -->
-    <div class="crypto-particles" id="particles-container"></div>
+    <!-- Animated Background -->
+    <div id="particles-container" class="fixed inset-0 z-0"></div>
     
     <!-- Header -->
-    <header class="bg-gray-900/80 backdrop-blur-md py-4 px-6 md:px-10 flex justify-between items-center sticky top-0 z-50 border-b border-gray-800">
+    <header class="fixed top-0 left-0 w-full z-50 py-4 px-6 md:px-10 flex justify-between items-center bg-black/30 backdrop-blur-md border-b border-gray-800">
         <div class="flex items-center">
             <!-- Logo/Name -->
             <div class="relative">
-                <div class="h-10 w-10 rounded-full mr-3 bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold">
-                    ₿W
+                <div class="h-10 w-10 rounded-full mr-3 bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center">
+                    <span class="text-white font-bold">₿W</span>
                 </div>
-                <span class="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-gray-900 animate-pulse"></span>
+                <span class="absolute -top-1 -right-1 h-4 w-4 bg-green-500 rounded-full border-2 border-gray-900 pulse-glow"></span>
             </div>
-            <h1 class="text-3xl font-bold gradient-text">₿abyWhale$</h1>
+            <h1 class="text-3xl font-bold text-white glitch-text" data-text="₿abyWhale$">₿abyWhale$</h1>
         </div>
+        
         <!-- Navigation -->
         <nav class="hidden md:flex space-x-8">
             <a href="#home" class="text-lg text-gray-300 hover:text-indigo-400 transition duration-300 flex items-center relative group">
@@ -312,7 +334,12 @@
                 <i class="fas fa-users mr-2"></i> Community
                 <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
             </a>
+            <a href="#premium" class="text-lg text-gray-300 hover:text-indigo-400 transition duration-300 flex items-center relative group">
+                <i class="fas fa-crown mr-2"></i> Premium
+                <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-indigo-400 transition-all duration-300 group-hover:w-full"></span>
+            </a>
         </nav>
+        
         <!-- Mobile Menu Button -->
         <button class="md:hidden text-gray-300 focus:outline-none" id="mobile-menu-button">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -322,7 +349,7 @@
     </header>
 
     <!-- Mobile Menu Overlay -->
-    <div id="mobile-menu" class="fixed inset-0 bg-gray-900 bg-opacity-95 z-50 hidden flex-col items-center justify-center space-y-8 md:hidden">
+    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-95 z-50 hidden flex-col items-center justify-center space-y-8 md:hidden">
         <button class="absolute top-6 right-6 text-gray-300 focus:outline-none" id="close-mobile-menu">
             <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -343,36 +370,35 @@
         <a href="#community" class="text-3xl text-gray-300 hover:text-indigo-400 transition duration-300" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
             <i class="fas fa-users mr-3"></i> Community
         </a>
+        <a href="#premium" class="text-3xl text-gray-300 hover:text-indigo-400 transition duration-300" onclick="document.getElementById('mobile-menu').classList.add('hidden')">
+            <i class="fas fa-crown mr-3"></i> Premium
+        </a>
     </div>
 
-    <main class="container mx-auto px-4 py-12" id="main-content">
+    <main class="relative z-10">
         <!-- Hero Section -->
-        <section id="home" class="relative text-center py-24 bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 rounded-3xl shadow-2xl mb-16 p-8 overflow-hidden crypto-wave">
-            <!-- Animated Crypto Icons Background -->
-            <div class="absolute inset-0 overflow-hidden z-0">
-                <div class="absolute top-10 left-10 text-yellow-400 opacity-20 text-4xl animate-float" style="animation-delay: 0s;">
-                    <i class="fab fa-bitcoin"></i>
+        <section id="home" class="min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+            <div class="absolute inset-0 bg-gradient-to-br from-blue-900/30 via-purple-900/20 to-pink-900/10"></div>
+            
+            <!-- Animated Crypto Background Elements -->
+            <div class="absolute inset-0 overflow-hidden">
+                <div class="absolute top-1/4 left-1/4 floating">
+                    <img src="https://images.unsplash.com/photo-1621761191319-c6fb62004040?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Bitcoin" class="w-32 h-32 rounded-full object-cover crypto-icon opacity-30">
                 </div>
-                <div class="absolute top-1/4 right-20 text-blue-400 opacity-20 text-3xl animate-float" style="animation-delay: 1s;">
-                    <i class="fab fa-ethereum"></i>
+                <div class="absolute top-1/3 right-1/4 floating" style="animation-delay: 1s;">
+                    <img src="https://images.unsplash.com/photo-1639762681485-074b7f938ba0?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Ethereum" class="w-24 h-24 rounded-full object-cover crypto-icon opacity-30">
                 </div>
-                <div class="absolute bottom-20 left-1/4 text-purple-400 opacity-20 text-2xl animate-float" style="animation-delay: 2s;">
-                    <i class="fas fa-coins"></i>
+                <div class="absolute bottom-1/4 left-1/3 floating" style="animation-delay: 2s;">
+                    <img src="https://images.unsplash.com/photo-1622630998477-20aa696ecb05?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Crypto Trading" class="w-40 h-40 rounded-full object-cover crypto-icon opacity-30">
                 </div>
-                <div class="absolute bottom-1/3 right-1/3 text-green-400 opacity-20 text-5xl animate-float" style="animation-delay: 3s;">
-                    <i class="fas fa-chart-line"></i>
-                </div>
-                <div class="absolute top-1/2 left-5 text-gray-400 opacity-15 text-3xl animate-float" style="animation-delay: 4s;">
-                    <i class="fab fa-litecoin-sign"></i>
-                </div>
-                <div class="absolute bottom-10 right-10 text-orange-400 opacity-18 text-4xl animate-float" style="animation-delay: 5s;">
-                    <i class="fab fa-dogecoin"></i>
+                <div class="absolute bottom-1/3 right-1/3 floating" style="animation-delay: 3s;">
+                    <img src="https://images.unsplash.com/photo-1642784353723-4ed48ca0d226?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Blockchain" class="w-28 h-28 rounded-full object-cover crypto-icon opacity-30">
                 </div>
             </div>
-
-            <div class="relative z-10">
+            
+            <div class="container mx-auto px-4 text-center relative z-10" data-aos="fade-up" data-aos-duration="1000">
                 <h2 class="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
-                    <span class="gradient-text">Dive into Crypto</span> with ₿abyWhale$!
+                    <span class="gradient-text">Dive into Crypto</span> with <span class="glitch-text" data-text="₿abyWhale$">₿abyWhale$</span>!
                 </h2>
                 <p class="text-2xl md:text-3xl font-semibold text-indigo-200 mb-8">
                     Navigate the Crypto Tides, Evolve into a Market Whale.
@@ -382,61 +408,590 @@
                     From beginner basics to advanced strategies, we're here to guide your journey.
                 </p>
                 <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
-                    <a href="#learn" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center interactive-btn pulse-animation">
+                    <a href="#learn" class="inline-block bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center pulse-glow">
                         <i class="fas fa-graduation-cap mr-2"></i> Start Learning Today
                     </a>
-                    <a href="#community" class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center interactive-btn">
-                        <i class="fas fa-users mr-2"></i> Join Our Community
+                    <a href="#premium" class="inline-block bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-4 px-10 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-crown mr-2"></i> Join Premium Community
                     </a>
                 </div>
             </div>
+            
+            <!-- Scroll Indicator -->
+            <div class="scroll-indicator"></div>
         </section>
 
         <!-- Stats Section -->
-        <section class="grid grid-cols-2 md:grid-cols-4 gap-6 mb-16 reveal">
-            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
-                <div class="text-4xl font-bold text-indigo-400 mb-2">10K+</div>
-                <div class="text-gray-300">Community Members</div>
-            </div>
-            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
-                <div class="text-4xl font-bold text-purple-400 mb-2">50+</div>
-                <div class="text-gray-300">Learning Modules</div>
-            </div>
-            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
-                <div class="text-4xl font-bold text-blue-400 mb-2">24/7</div>
-                <div class="text-gray-300">Support</div>
-            </div>
-            <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl text-center shadow-lg card-hover border border-gray-700">
-                <div class="text-4xl font-bold text-green-400 mb-2">100+</div>
-                <div class="text-gray-300">Premium Signals Monthly</div>
+        <section class="py-16 relative">
+            <div class="container mx-auto px-4">
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="crypto-card p-8 text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="text-5xl font-bold text-indigo-400 mb-2">10K+</div>
+                        <div class="text-gray-300">Community Members</div>
+                    </div>
+                    <div class="crypto-card p-8 text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="text-5xl font-bold text-purple-400 mb-2">50+</div>
+                        <div class="text-gray-300">Learning Modules</div>
+                    </div>
+                    <div class="crypto-card p-8 text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="text-5xl font-bold text-blue-400 mb-2">24/7</div>
+                        <div class="text-gray-300">Support</div>
+                    </div>
+                    <div class="crypto-card p-8 text-center" data-aos="fade-up" data-aos-delay="400">
+                        <div class="text-5xl font-bold text-green-400 mb-2">100+</div>
+                        <div class="text-gray-300">Premium Signals Monthly</div>
+                    </div>
+                </div>
             </div>
         </section>
 
         <!-- Live Market Data Section -->
-        <section id="live-data" class="py-16 bg-gradient-to-br from-gray-900 to-blue-950 rounded-3xl shadow-2xl mb-16 p-8 reveal">
-            <h3 class="text-4xl font-bold text-center text-teal-400 mb-12">
-                <i class="fas fa-chart-bar mr-3"></i> Live Market Data
-            </h3>
-            <p class="text-xl text-center text-gray-300 mb-10 max-w-3xl mx-auto">
-                Stay informed with real-time global crypto market insights.
-            </p>
+        <section id="live-data" class="py-20 relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/50 to-blue-950/50"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <h3 class="text-4xl font-bold text-center text-teal-400 mb-12" data-aos="fade-up">
+                    <i class="fas fa-chart-bar mr-3"></i> Live Market Data
+                </h3>
+                <p class="text-xl text-center text-gray-300 mb-10 max-w-3xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                    Stay informed with real-time global crypto market insights.
+                </p>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <!-- Global Market Cap -->
-                <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center border-l-4 border-teal-500 card-hover">
-                    <h4 class="text-2xl font-semibold text-white mb-3">Total Market Cap</h4>
-                    <div id="total-market-cap" class="text-4xl font-bold text-teal-400">
-                        <div class="loading-spinner"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Global Market Cap -->
+                    <div class="crypto-card p-8 flex flex-col items-center justify-center text-center" data-aos="fade-right">
+                        <h4 class="text-2xl font-semibold text-white mb-3">Total Market Cap</h4>
+                        <div id="total-market-cap" class="text-4xl font-bold text-teal-400">
+                            <div class="loading-spinner"></div>
+                        </div>
+                        <p id="market-cap-error" class="text-red-400 mt-2 hidden">Failed to load.</p>
                     </div>
-                    <p id="market-cap-error" class="text-red-400 mt-2 hidden">Failed to load.</p>
+
+                    <!-- Dominance -->
+                    <div class="crypto-card p-8 flex flex-col items-center justify-center text-center" data-aos="fade-left">
+                        <h4 class="text-2xl font-semibold text-white mb-3">Top 3 Dominance</h4>
+                        <div class="flex flex-col space-y-2">
+                            <p id="btc-dominance" class="text-2xl font-bold text-yellow-400 flex items-center justify-center">
+                                <i class="fab fa-bitcoin mr-2 text-yellow-500"></i> BTC: <span class="loading-spinner w-6 h-6 ml-2"></span>
+                            </p>
+                            <p id="eth-dominance" class="text-2xl font-bold text-blue-400 flex items-center justify-center">
+                                <i class="fab fa-ethereum mr-2 text-blue-500"></i> ETH: <span class="loading-spinner w-6 h-6 ml-2"></span>
+                            </p>
+                            <p id="bnb-dominance" class="text-2xl font-bold text-purple-400 flex items-center justify-center">
+                                <i class="fas fa-coins mr-2 text-purple-500"></i> BNB: <span class="loading-spinner w-6 h-6 ml-2"></span>
+                            </p>
+                        </div>
+                        <p id="dominance-error" class="text-red-400 mt-2 hidden">Failed to load.</p>
+                    </div>
                 </div>
 
-                <!-- Dominance -->
-                <div class="bg-gradient-to-br from-gray-800 to-gray-900 p-6 rounded-2xl shadow-lg flex flex-col items-center justify-center text-center border-l-4 border-cyan-500 card-hover">
-                    <h4 class="text-2xl font-semibold text-white mb-3">Top 3 Dominance</h4>
-                    <div class="flex flex-col space-y-2">
-                        <p id="btc-dominance" class="text-2xl font-bold text-yellow-400 flex items-center justify-center">
-                            <i class="fab fa-bitcoin mr-2 text-yellow-500"></i> BTC: <span class="loading-spinner w-6 h-6 ml-2"></span>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+                    <!-- Top Gainers -->
+                    <div class="crypto-card p-8" data-aos="fade-right" data-aos-delay="200">
+                        <h4 class="text-2xl font-semibold text-white mb-4 flex items-center">
+                            <i class="fas fa-arrow-up text-green-400 mr-2"></i> Daily Top Gainers
+                        </h4>
+                        <ul id="top-gainers-list" class="space-y-2">
+                            <li><div class="loading-spinner inline-block mr-2"></div> Loading...</li>
+                        </ul>
+                        <p id="gainers-error" class="text-red-400 mt-2 hidden">Failed to load.</p>
+                    </div>
+
+                    <!-- Top Losers -->
+                    <div class="crypto-card p-8" data-aos="fade-left" data-aos-delay="200">
+                        <h4 class="text-2xl font-semibold text-white mb-4 flex items-center">
+                            <i class="fas fa-arrow-down text-red-400 mr-2"></i> Daily Top Losers
+                        </h4>
+                        <ul id="top-losers-list" class="space-y-2">
+                            <li><div class="loading-spinner inline-block mr-2"></div> Loading...</li>
+                        </ul>
+                        <p id="losers-error" class="text-red-400 mt-2 hidden">Failed to load.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Learning Section -->
+        <section id="learn" class="py-20 relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-gray-900/50 to-indigo-900/30"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <h3 class="text-4xl font-bold text-center text-indigo-400 mb-12" data-aos="fade-up">
+                    <span class="gradient-text">Master Crypto</span>: From Beginner to Expert
+                </h3>
+
+                <!-- Main Learning Modules Grid -->
+                <div id="learning-modules-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Learning Card 1: Crypto Basics -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="100">
+                        <div class="bg-gradient-to-r from-indigo-600 to-purple-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-book text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Crypto Basics</h4>
+                        <p class="text-gray-300 mb-6 flex-grow">
+                            Demystify cryptocurrency, blockchain, wallets, and secure your first transactions. Essential knowledge for every aspiring whale.
                         </p>
-                        <p id="eth-dominance" class="text-2xl font-bold text-blue-400 flex items-center justify-center">
-                            <i class="fab fa-ethereum mr-2 text-blue-500"></i> ETH: <span class="loading-spinner
+                        <button data-module="crypto-basics" class="explore-module-button text-indigo-400 hover:text-indigo-300 font-medium flex items-center">
+                            Explore Module
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <!-- Learning Card 2: Technical Analysis -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="bg-gradient-to-r from-purple-600 to-pink-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-chart-line text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Technical Analysis</h4>
+                        <p class="text-gray-300 mb-6 flex-grow">
+                            Master charting tools, indicators, and patterns to predict market movements and make informed trading decisions.
+                        </p>
+                        <button data-module="technical-analysis" class="explore-module-button text-indigo-400 hover:text-indigo-300 font-medium flex items-center">
+                            Explore Module
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <!-- Learning Card 3: DeFi & NFTs Explained -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="bg-gradient-to-r from-pink-600 to-red-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-coins text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">DeFi & NFTs Explained</h4>
+                        <p class="text-gray-300 mb-6 flex-grow">
+                            Dive deep into Decentralized Finance, Non-Fungible Tokens, and the cutting-edge future of digital assets.
+                        </p>
+                        <button data-module="defi-nfts" class="explore-module-button text-indigo-400 hover:text-indigo-300 font-medium flex items-center">
+                            Explore Module
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <!-- Learning Card 4: Crypto Security & Wallets -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="400">
+                        <div class="bg-gradient-to-r from-blue-600 to-cyan-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-shield-alt text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Crypto Security & Wallets</h4>
+                        <p class="text-gray-300 mb-6 flex-grow">
+                            Protect your digital assets. Learn about secure wallet management, phishing prevention, and common crypto scams.
+                        </p>
+                        <button data-module="crypto-security" class="explore-module-button text-indigo-400 hover:text-indigo-300 font-medium flex items-center">
+                            Explore Module
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <!-- Learning Card 5: Advanced Trading Strategies -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="500">
+                        <div class="bg-gradient-to-r from-orange-600 to-yellow-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-chart-area text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Advanced Trading Strategies</h4>
+                        <p class="text-gray-300 mb-6 flex-grow">
+                            Explore advanced concepts like derivatives, options, futures, and sophisticated risk management techniques.
+                        </p>
+                        <button data-module="advanced-trading" class="explore-module-button text-indigo-400 hover:text-indigo-300 font-medium flex items-center">
+                            Explore Module
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <!-- Learning Card 6: Decentralized Autonomous Organizations (DAOs) -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="600">
+                        <div class="bg-gradient-to-r from-teal-600 to-green-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-users-cog text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Decentralized Autonomous Organizations (DAOs)</h4>
+                        <p class="text-gray-300 mb-6 flex-grow">
+                            Understand the structure, governance, and participation in decentralized autonomous organizations.
+                        </p>
+                        <button data-module="daos" class="explore-module-button text-indigo-400 hover:text-indigo-300 font-medium flex items-center">
+                            Explore Module
+                            <i class="fas fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Crypto Explainer Section -->
+                <div class="mt-16 crypto-card p-8" data-aos="fade-up">
+                    <h4 class="text-3xl font-semibold text-white mb-6 flex items-center">
+                        <i class="fas fa-robot text-indigo-400 mr-3"></i> AI Crypto Explainer
+                    </h4>
+                    <p class="text-gray-300 mb-6">
+                        Unsure about a crypto term? Enter it below, and our AI will provide a simple, easy-to-understand explanation.
+                    </p>
+                    <div class="relative">
+                        <textarea id="crypto-term-input" class="w-full p-4 rounded-lg bg-gray-800 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 mb-4" rows="3" placeholder="e.g., 'Decentralized Finance', 'Blockchain', 'Yield Farming'" maxlength="200"></textarea>
+                        <div class="absolute bottom-6 right-4 text-gray-400 text-sm">
+                            <span id="char-count">0</span>/200
+                        </div>
+                    </div>
+                    <button id="explain-button" class="bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center">
+                        <i class="fas fa-magic mr-2"></i> Explain Term
+                    </button>
+                    <div id="explanation-output" class="mt-6 p-4 bg-gray-800 rounded-lg text-gray-200 min-h-[100px] flex items-center justify-center">
+                        <p class="text-center text-gray-400">Your explanation will appear here.</p>
+                    </div>
+                    <div id="loading-indicator" class="hidden mt-4 text-center text-indigo-400">
+                        <div class="inline-flex items-center">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-indigo-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Generating explanation...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Community & Premium Section -->
+        <section id="community" class="py-20 relative">
+            <div class="absolute inset-0 bg-gradient-to-br from-purple-900/40 to-pink-900/30"></div>
+            <div class="container mx-auto px-4 relative z-10">
+                <h3 class="text-4xl font-bold text-center text-white mb-12" data-aos="fade-up">
+                    Join the <span class="gradient-text">₿abyWhale$ Community</span>
+                </h3>
+                <p class="text-xl text-center text-gray-200 mb-10 max-w-4xl mx-auto" data-aos="fade-up" data-aos-delay="100">
+                    Beyond learning, ₿abyWhale$ offers a community where you can collaborate, trade, and grow
+                    with like-minded individuals.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <!-- Feature Card 1: Crowd Trading -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="200">
+                        <div class="bg-gradient-to-r from-green-600 to-emerald-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-handshake text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Crowd Trading & Staking</h4>
+                        <p class="text-gray-300 flex-grow">
+                            Participate in real-time crowd trading sessions, learn from experienced traders, and explore
+                            staking opportunities to earn passive income.
+                        </p>
+                    </div>
+                    <!-- Feature Card 2: Premium Signals & Insights -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="300">
+                        <div class="bg-gradient-to-r from-yellow-600 to-amber-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-lightbulb text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Premium Signals & Insights</h4>
+                        <p class="text-gray-300 flex-grow">
+                            Receive timely trading signals and in-depth market analysis directly from our experts, giving
+                            you an edge in the volatile crypto market.
+                        </p>
+                    </div>
+                    <!-- Feature Card 3: Project Launches -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="400">
+                        <div class="bg-gradient-to-r from-red-600 to-pink-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-rocket text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Exclusive Project Launches</h4>
+                        <p class="text-gray-300 flex-grow">
+                            Be among the first to know about and participate in new crypto project launches, with early
+                            access and exclusive benefits for our community.
+                        </p>
+                    </div>
+                    <!-- Feature Card 4: Dedicated Support -->
+                    <div class="crypto-card p-8 flex flex-col items-center text-center" data-aos="fade-up" data-aos-delay="500">
+                        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-4 rounded-full mb-6">
+                            <i class="fas fa-headset text-white text-3xl"></i>
+                        </div>
+                        <h4 class="text-2xl font-semibold text-white mb-4">Dedicated Support</h4>
+                        <p class="text-gray-300 flex-grow">
+                            Get personalized assistance and answers to your questions from our team and experienced community members.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Call to Action for Channels -->
+                <div id="premium" class="text-center mt-12" data-aos="fade-up">
+                    <h4 class="text-3xl font-bold text-white mb-6">Ready to become a <span class="gradient-text">₿abyWhale$</span>?</h4>
+                    <div class="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-6">
+                        <a id="discord-link" href="https://discord.com/your-community-invite" target="_blank" class="inline-block bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition duration-300 flex items-center justify-center">
+                            <i class="fab fa-discord mr-2"></i> Join Our Discord
+                        </a>
+                        <a id="telegram-link" href="https://t.me/your_community_channel" target="_blank" class="inline-block bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-700 hover:to-blue-700 text-white font-semibold py-3 px-8 rounded-full shadow-lg transform hover:scale-105 transition duration-300">
+                            <i class="fab fa-telegram-plane mr-2"></i> Join Our Telegram
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-black/50 py-8 px-6 md:px-10 mt-16 text-center text-gray-400 border-t border-gray-800 relative z-10">
+        <p>&copy; 2025 ₿abyWhale$. All rights reserved.</p>
+        <div class="flex justify-center space-x-6 mt-4">
+            <a href="javascript:void(0);" class="hover:text-indigo-400 transition duration-300">Privacy Policy</a>
+            <a href="javascript:void(0);" class="hover:text-indigo-400 transition duration-300">Terms of Service</a>
+            <a href="mailto:info@babywhales.com" class="hover:text-indigo-400 transition duration-300">Contact Us</a>
+            <!-- Social Media Icons -->
+            <a href="javascript:void(0);" class="hover:text-indigo-400 transition duration-300">
+                <i class="fab fa-twitter text-xl"></i>
+            </a>
+            <a href="javascript:void(0);" class="hover:text-indigo-400 transition duration-300">
+                <i class="fab fa-facebook-f text-xl"></i>
+            </a>
+            <a href="javascript:void(0);" class="hover:text-indigo-400 transition duration-300">
+                <i class="fab fa-instagram text-xl"></i>
+            </a>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Initialize AOS (Animate On Scroll)
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100
+        });
+
+        // Create animated particles background
+        function createParticles() {
+            const container = document.getElementById('particles-container');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random size
+                const size = Math.random() * 100 + 50;
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                
+                // Random position
+                particle.style.left = `${Math.random() * 100}%`;
+                particle.style.top = `${Math.random() * 100}%`;
+                
+                // Random animation
+                const duration = Math.random() * 20 + 10;
+                particle.style.animation = `floating ${duration}s ease-in-out infinite`;
+                
+                container.appendChild(particle);
+            }
+        }
+        
+        // Mobile menu toggle
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+
+        mobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.remove('hidden');
+            mobileMenu.classList.add('flex');
+        });
+
+        closeMobileMenuButton.addEventListener('click', () => {
+            mobileMenu.classList.add('hidden');
+            mobileMenu.classList.remove('flex');
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                const href = this.getAttribute('href');
+                if (href && href !== '#') {
+                    e.preventDefault();
+                    document.querySelector(href).scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                }
+                // Close mobile menu if open
+                if (!mobileMenu.classList.contains('hidden')) {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                }
+            });
+        });
+
+        // Crypto Explainer Logic
+        const cryptoTermInput = document.getElementById('crypto-term-input');
+        const charCount = document.getElementById('char-count');
+        const explainButton = document.getElementById('explain-button');
+        const explanationOutput = document.getElementById('explanation-output');
+        const loadingIndicator = document.getElementById('loading-indicator');
+
+        cryptoTermInput.addEventListener('input', () => {
+            charCount.textContent = cryptoTermInput.value.length;
+        });
+
+        explainButton.addEventListener('click', async () => {
+            const term = cryptoTermInput.value.trim();
+            if (!term) {
+                explanationOutput.innerHTML = '<p class="text-red-400 text-center">Please enter a crypto term to explain.</p>';
+                return;
+            }
+
+            explanationOutput.innerHTML = '';
+            loadingIndicator.classList.remove('hidden');
+
+            try {
+                let chatHistory = [];
+                const prompt = `Explain "${term}" in simple terms for a crypto beginner, focusing on its core concept and relevance in the crypto space. Keep the explanation concise and easy to understand.`;
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+
+                const payload = { contents: chatHistory };
+                const apiKey = ""; // Canvas will provide this in runtime
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (result.candidates && result.candidates.length > 0 &&
+                    result.candidates[0].content && result.candidates[0].content.parts &&
+                    result.candidates[0].content.parts.length > 0) {
+                    const text = result.candidates[0].content.parts[0].text;
+                    explanationOutput.innerHTML = `<p>${text}</p>`;
+                } else {
+                    explanationOutput.innerHTML = '<p class="text-red-400 text-center">Could not get an explanation. Please try again.</p>';
+                }
+            } catch (error) {
+                console.error('Error fetching explanation:', error);
+                explanationOutput.innerHTML = '<p class="text-red-400 text-center">An error occurred. Please try again later.</p>';
+            } finally {
+                loadingIndicator.classList.add('hidden');
+            }
+        });
+
+        // Live Market Data Logic (CoinGecko API)
+        const totalMarketCapElement = document.getElementById('total-market-cap');
+        const marketCapErrorElement = document.getElementById('market-cap-error');
+        const btcDominanceElement = document.getElementById('btc-dominance');
+        const ethDominanceElement = document.getElementById('eth-dominance');
+        const bnbDominanceElement = document.getElementById('bnb-dominance');
+        const dominanceErrorElement = document.getElementById('dominance-error');
+        const topGainersList = document.getElementById('top-gainers-list');
+        const gainersErrorElement = document.getElementById('gainers-error');
+        const topLosersList = document.getElementById('top-losers-list');
+        const losersErrorElement = document.getElementById('losers-error');
+
+        const formatCurrency = (value) => {
+            return new Intl.NumberFormat('en-US', {
+                style: 'currency',
+                currency: 'USD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            }).format(value);
+        };
+
+        const formatPercentage = (value) => {
+            return `${value.toFixed(2)}%`;
+        };
+
+        const fetchGlobalMarketData = async () => {
+            marketCapErrorElement.classList.add('hidden');
+            dominanceErrorElement.classList.add('hidden');
+            totalMarketCapElement.innerHTML = '<div class="loading-spinner mx-auto"></div>';
+            btcDominanceElement.innerHTML = '<i class="fab fa-bitcoin mr-2 text-yellow-500"></i> BTC: <span class="loading-spinner w-6 h-6 ml-2"></span>';
+            ethDominanceElement.innerHTML = '<i class="fab fa-ethereum mr-2 text-blue-500"></i> ETH: <span class="loading-spinner w-6 h-6 ml-2"></span>';
+            bnbDominanceElement.innerHTML = '<i class="fas fa-coins mr-2 text-purple-500"></i> BNB: <span class="loading-spinner w-6 h-6 ml-2"></span>';
+
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/global');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                const globalData = data.data;
+
+                totalMarketCapElement.textContent = formatCurrency(globalData.total_market_cap.usd);
+                btcDominanceElement.innerHTML = `<i class="fab fa-bitcoin mr-2 text-yellow-500"></i> BTC: <span class="text-yellow-400">${formatPercentage(globalData.market_cap_percentage.btc)}</span>`;
+                ethDominanceElement.innerHTML = `<i class="fab fa-ethereum mr-2 text-blue-500"></i> ETH: <span class="text-blue-400">${formatPercentage(globalData.market_cap_percentage.eth)}</span>`;
+                const bnbDom = globalData.market_cap_percentage.bnb ? formatPercentage(globalData.market_cap_percentage.bnb) : 'N/A';
+                bnbDominanceElement.innerHTML = `<i class="fas fa-coins mr-2 text-purple-500"></i> BNB: <span class="text-purple-400">${bnbDom}</span>`;
+
+            } catch (error) {
+                console.error('Error fetching global market data:', error);
+                marketCapErrorElement.classList.remove('hidden');
+                dominanceErrorElement.classList.remove('hidden');
+                totalMarketCapElement.textContent = 'N/A';
+                btcDominanceElement.innerHTML = '<i class="fab fa-bitcoin mr-2 text-yellow-500"></i> BTC: N/A';
+                ethDominanceElement.innerHTML = '<i class="fab fa-ethereum mr-2 text-blue-500"></i> ETH: N/A';
+                bnbDominanceElement.innerHTML = '<i class="fas fa-coins mr-2 text-purple-500"></i> BNB: N/A';
+            }
+        };
+
+        const fetchTopGainersLosers = async () => {
+            gainersErrorElement.classList.add('hidden');
+            losersErrorElement.classList.add('hidden');
+            topGainersList.innerHTML = '<li><div class="loading-spinner inline-block mr-2"></div> Loading Gainers...</li>';
+            topLosersList.innerHTML = '<li><div class="loading-spinner inline-block mr-2"></div> Loading Losers...</li>';
+
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=24h');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+
+                const filteredCoins = data.filter(coin => coin.price_change_percentage_24h !== null);
+
+                const gainers = [...filteredCoins].sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h).slice(0, 5);
+                const losers = [...filteredCoins].sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h).slice(0, 5);
+
+                topGainersList.innerHTML = '';
+                if (gainers.length > 0) {
+                    gainers.forEach(coin => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'flex justify-between items-center';
+                        listItem.innerHTML = `
+                            <span class="font-medium text-gray-200 flex items-center">
+                                <i class="fas fa-coins mr-2 text-yellow-300"></i> ${coin.name} (${coin.symbol.toUpperCase()})
+                            </span>
+                            <span class="text-green-400 font-bold">${coin.price_change_percentage_24h.toFixed(2)}%</span>
+                        `;
+                        topGainersList.appendChild(listItem);
+                    });
+                } else {
+                    topGainersList.innerHTML = '<li>No gainers found for the last 24h.</li>';
+                }
+
+                topLosersList.innerHTML = '';
+                if (losers.length > 0) {
+                    losers.forEach(coin => {
+                        const listItem = document.createElement('li');
+                        listItem.className = 'flex justify-between items-center';
+                        listItem.innerHTML = `
+                            <span class="font-medium text-gray-200 flex items-center">
+                                <i class="fas fa-coins mr-2 text-red-300"></i> ${coin.name} (${coin.symbol.toUpperCase()})
+                            </span>
+                            <span class="text-red-400 font-bold">${coin.price_change_percentage_24h.toFixed(2)}%</span>
+                        `;
+                        topLosersList.appendChild(listItem);
+                    });
+                } else {
+                    topLosersList.innerHTML = '<li>No losers found for the last 24h.</li>';
+                }
+
+            } catch (error) {
+                console.error('Error fetching top gainers/losers:', error);
+                gainersErrorElement.classList.remove('hidden');
+                losersErrorElement.classList.remove('hidden');
+                topGainersList.innerHTML = '<li>Failed to load gainers. Please check console for errors.</li>';
+                topLosersList.innerHTML = '<li>Failed to load losers. Please check console for errors.</li>';
+            }
+        };
+
+        // Module Display Logic
+        const exploreModuleButtons = document.querySelectorAll('.explore-module-button');
+        
+        exploreModuleButtons.forEach(button => {
+            button.addEventListener('click', (event) => {
+                const moduleId = event.currentTarget.dataset.module;
+                // In a real implementation, this would redirect to the appropriate module content
+                // For this demo, we'll just show an alert
+                alert(`Redirecting to ${moduleId} module content...`);
+                // window.location.href = `/modules/${moduleId}`; // Actual redirect
+            });
+        });
+
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            createParticles();
+            fetchGlobalMarketData();
+            fetchTopGainersLosers();
+        });
+    </script>
+</body>
+</html>
